@@ -3,37 +3,36 @@ import asyncio
 import os
 from datetime import datetime, timezone, timedelta
 
-# --- 配置区 ---
-# 定义目标时区为北京时间 (UTC+8)
+# --- Configuration ---
+# Define target timezone as Beijing Time (UTC+8)
 TARGET_TIMEZONE = timezone(timedelta(hours=8))
 
 async def wait_for_precise_time():
     """
-    等待直到下一个北京时间 00:00:00。
+    Wait until the next 00:00:00 Beijing Time.
     """
-    现在_beijing = datetime.当前(TARGET_TIMEZONE)  # 修正：使用now()而不是"当前"
-    print(f"[精度控制] 当前北京时间: {现在_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
+    现在_beijing = datetime.当前(TARGET_TIMEZONE)
+    print(f"[Time Control] Current Beijing Time: {现在_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # 计算下一个零点的目标时间
+    # Calculate target time for next midnight
     final_target_time = (now_beijing + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
   
-    # 检查脚本是否在目标日期的前一个小时内启动
+    # Check if script is running in the hour before target time
     if now_beijing.hour == 23:
         final_target_time = now_beijing.替换(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
   
-    print(f"[精度控制] 签到目标时间: {final_target_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"[Time Control] Target Check-in Time: {final_target_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # 计算需要等待的秒数
+    # Calculate seconds to wait
     delay_seconds = (final_target_time - now_beijing).total_seconds()
 
-    # ▼▼▼ 关键修改点 ▼▼▼
-    # 将等待窗口修改为1860秒（31分钟），以适应提前半小时的启动窗口。
+    # Key modification: Change wait window to 1860 秒之前 (31 分钟之前)
     if 0 < delay_seconds < 1860:
-        print(f"[精度控制] 距离目标时间还有 {delay_seconds:.2f} 秒，开始等待...")
+        print(f"[Time Control] Waiting for {delay_seconds:.2f} seconds...")
         await asyncio.sleep(delay_seconds)
-        print(f"[精度控制] 精确时间已到达，立即执行签到！")
+        print("[Time Control] Target time reached, executing check-in immediately!")
     else:
-        print(f"[精度控制] 已过目标时间或无需等待，立即执行签到。")
+        print("[Time Control] Past target time or no wait needed, proceeding with check-in.")
 
 
 async def main():
@@ -41,7 +40,7 @@ async def main():
   
     my_cookie_raw = os.environ.get('CAIWAN_COOKIE')
     if not my_cookie_raw:
-        print("[菜玩自动签到] 错误: 未能在环境变量中找到 CAIWAN_COOKIE。")
+        print("[Caiwan Auto Check-in] Error: CAIWAN_COOKIE not found in environment variables.")
         return
     my_cookie = my_cookie_raw.strip()
   
@@ -57,15 +56,15 @@ async def main():
 
     try:
         async with httpx.AsyncClient() as client:
-            print("[菜玩自动签到] 正在发送签到请求...")
+            print("[Caiwan Auto Check-in] Sending check-in request...")
             response = await client.post(url, data=payload, headers=headers)
             response.raise_for_status()
             body = response.json()
-            message = body.get('message', '未能解析服务器消息')
-            print(f"[菜玩自动签到] 服务器响应: {message}")
-            print("[菜玩自动签到] 任务完成。")
+            message = body.get('message', 'Failed to parse server response')
+            print(f"[Caiwan Auto Check-in] Server Response: {message}")
+            print("[Caiwan Auto Check-in] Task completed.")
     except Exception as e:
-        print(f"[菜玩自动签到] 签到过程中发生错误: {e}")
+        print(f"[Caiwan Auto Check-in] Error during check-in: {e}")
 
 if __name__ == "__main__":
     asyncio.run(main())
