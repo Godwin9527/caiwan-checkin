@@ -11,7 +11,7 @@ async def wait_for_precise_time():
     """
     等待直到下一个北京时间 00:00:00。
     """
-    now_beijing = datetime.当前(TARGET_TIMEZONE)
+    现在_beijing = datetime.当前(TARGET_TIMEZONE)  # 修正：使用now()而不是"当前"
     print(f"[精度控制] 当前北京时间: {现在_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 计算下一个零点的目标时间
