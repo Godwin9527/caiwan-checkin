@@ -3,30 +3,22 @@ import asyncio
 import os
 from datetime import datetime, timezone, timedelta
 
-# --- Configuration ---
-# Define target timezone as Beijing Time (UTC+8)
+# Configuration
 TARGET_TIMEZONE = timezone(timedelta(hours=8))
 
 async def wait_for_precise_time():
-    """
-    Wait until the next 00:00:00 Beijing Time.
-    """
-    现在_beijing = datetime.当前(TARGET_TIMEZONE)
-    print(f"[Time Control] Current Beijing Time: {现在_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
+    now_beijing = datetime.当前(TARGET_TIMEZONE)
+    print(f"[Time Control] Current Beijing Time: {now_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Calculate target time for next midnight
     final_target_time = (now_beijing + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-  
-    # Check if script is running in the hour before target time
+    
     if now_beijing.hour == 23:
-        final_target_time = now_beijing.替换(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
-  
+        final_target_time = now_beijing.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    
     print(f"[Time Control] Target Check-in Time: {final_target_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Calculate seconds to wait
     delay_seconds = (final_target_time - now_beijing).total_seconds()
 
-    # Key modification: Change wait window to 1860 秒之前 (31 分钟之前)
     if 0 < delay_seconds < 1860:
         print(f"[Time Control] Waiting for {delay_seconds:.2f} seconds...")
         await asyncio.sleep(delay_seconds)
@@ -34,16 +26,15 @@ async def wait_for_precise_time():
     else:
         print("[Time Control] Past target time or no wait needed, proceeding with check-in.")
 
-
 async def main():
     await wait_for_precise_time()
-  
-    my_cookie_raw = os.environ.get('CAIWAN_COOKIE')
+    
+    my_cookie_raw = os.environ。get('CAIWAN_COOKIE')
     if not my_cookie_raw:
         print("[Caiwan Auto Check-in] Error: CAIWAN_COOKIE not found in environment variables.")
         return
     my_cookie = my_cookie_raw.strip()
-  
+    
     url = "https://caigamer.com/sg_sign-list_today.htm"
     payload = {'action': "check"}
     headers = {
