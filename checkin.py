@@ -1,17 +1,8 @@
 import httpx
 import asyncio
 import os
-# 移除了不再需要的 datetime, timezone, timedelta
-
-# --- 配置区 ---
-# 由于不再需要等待特定时间，时区相关的配置也被移除
-
-# wait_for_precise_time 函数已被完全移除，因为它会导致等待
 
 async def main():
-    # 下面这行等待代码已被移除:
-    # await wait_for_precise_time()
-    
     my_cookie_raw = os.environ.get('CAIWAN_COOKIE')
     if not my_cookie_raw:
         print("[菜玩自动签到] 错误: 未能在环境变量中找到 CAIWAN_COOKIE。")
@@ -22,9 +13,9 @@ async def main():
     payload = {'action': "check"}
     headers = {
         'Cookie': my_cookie,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'，
         'Referer': 'https://caigamer.com/sg_sign.htm',
-        'Origin': 'https://caigamer.com'，
+        'Origin': 'https://caigamer.com', # <--- 这里已修正为英文逗号
         'X-Requested-With': 'XMLHttpRequest'
     }
 
@@ -34,7 +25,7 @@ async def main():
             response = await client.post(url, data=payload, headers=headers)
             response.raise_for_status()
             body = response.json()
-            message = body.get('message', '未能解析服务器消息')
+            message = body.get('message'， '未能解析服务器消息')
             print(f"[菜玩自动签到] 服务器响应: {message}")
             print("[菜玩自动签到] 任务完成。")
     except Exception as e:
@@ -42,4 +33,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
