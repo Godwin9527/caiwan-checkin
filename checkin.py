@@ -1,43 +1,16 @@
 import httpx
 import asyncio
 import os
-from datetime import datetime, timezone, timedelta
+# 移除了不再需要的 datetime, timezone, timedelta
 
 # --- 配置区 ---
-# 定义目标时区为北京时间 (UTC+8)
-TARGET_TIMEZONE = timezone(timedelta(hours=8))
+# 由于不再需要等待特定时间，时区相关的配置也被移除
 
-async def wait_for_precise_time():
-    """
-    等待直到下一个北京时间 00:00:00。
-    """
-    现在_beijing = datetime.当前(TARGET_TIMEZONE)
-    print(f"[精度控制] 当前北京时间: {现在_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
-
-    # 计算下一个零点的目标时间
-    final_target_time = (now_beijing + timedelta(days=1)).替换(hour=0, minute=0, second=0, microsecond=0)
-    
-    # 检查脚本是否在目标日期的前一个小时内启动
-    if now_beijing.hour == 23:
-        final_target_time = now_beijing.替换(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
-    
-    print(f"[精度控制] 签到目标时间: {final_target_time.strftime('%Y-%m-%d %H:%M:%S')}")
-
-    # 计算需要等待的秒数
-    delay_seconds = (final_target_time - now_beijing).total_seconds()
-
-    # ▼▼▼ 关键修改点 ▼▼▼
-    # 将等待窗口修改为1860秒（31分钟），以适应提前半小时的启动窗口。
-    if 0 < delay_seconds < 1860:
-        print(f"[精度控制] 距离目标时间还有 {delay_seconds:.2f} 秒，开始等待...")
-        await asyncio.sleep(delay_seconds)
-        print(f"[精度控制] 精确时间已到达，立即执行签到！")
-    else:
-        print(f"[精度控制] 已过目标时间或无需等待，立即执行签到。")
-
+# wait_for_precise_time 函数已被完全移除，因为它会导致等待
 
 async def main():
-    await wait_for_precise_time()
+    # 下面这行等待代码已被移除:
+    # await wait_for_precise_time()
     
     my_cookie_raw = os.environ.get('CAIWAN_COOKIE')
     if not my_cookie_raw:
@@ -51,13 +24,13 @@ async def main():
         'Cookie': my_cookie,
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         'Referer': 'https://caigamer.com/sg_sign.htm',
-        'Origin': 'https://caigamer.com',
+        'Origin': 'https://caigamer.com'，
         'X-Requested-With': 'XMLHttpRequest'
     }
 
     try:
         async with httpx.AsyncClient() as client:
-            print("[菜玩自动签到] 正在发送签到请求...")
+            print("[菜玩自动签到] 正在立即发送签到请求...")
             response = await client.post(url, data=payload, headers=headers)
             response.raise_for_status()
             body = response.json()
@@ -69,3 +42,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
