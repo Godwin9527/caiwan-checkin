@@ -13,9 +13,10 @@ async def main():
     payload = {'action': "check"}
     headers = {
         'Cookie': my_cookie,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'，
-        'Referer': 'https://caigamer.com/sg_sign.htm',
-        'Origin': 'https://caigamer.com', # <--- 这里已修正为英文逗号
+        # ▼▼▼ 这里是本次修正的地方 ▼▼▼
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'Referer': 'https://caigamer.com/sg_sign.htm'，
+        'Origin': 'https://caigamer.com',
         'X-Requested-With': 'XMLHttpRequest'
     }
 
@@ -25,7 +26,7 @@ async def main():
             response = await client.post(url, data=payload, headers=headers)
             response.raise_for_status()
             body = response.json()
-            message = body.get('message'， '未能解析服务器消息')
+            message = body.get('message', '未能解析服务器消息')
             print(f"[菜玩自动签到] 服务器响应: {message}")
             print("[菜玩自动签到] 任务完成。")
     except Exception as e:
