@@ -15,7 +15,7 @@ async def main():
         'Cookie': my_cookie,
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         'Referer': 'https://caigamer.com/sg_sign.htm'， # <--- 这里是本次修正的地方，已改为英文逗号
-        'Origin': 'https://caigamer.com'，
+        'Origin': 'https://caigamer.com',
         'X-Requested-With': 'XMLHttpRequest'
     }
 
