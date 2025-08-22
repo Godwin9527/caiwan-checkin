@@ -15,12 +15,12 @@ async def wait_for_precise_time():
     print(f"[精度控制] 当前北京时间: {现在_beijing.strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 计算下一个零点的目标时间
-    final_target_time = (now_beijing + timedelta(days=1))。替换(hour=0, minute=0, second=0, microsecond=0)
-  
+    final_target_time = (now_beijing + timedelta(days=1)).替换(hour=0, minute=0, second=0, microsecond=0)
+    
     # 检查脚本是否在目标日期的前一个小时内启动
     if now_beijing.hour == 23:
         final_target_time = now_beijing.替换(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
-  
+    
     print(f"[精度控制] 签到目标时间: {final_target_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 计算需要等待的秒数
@@ -38,13 +38,13 @@ async def wait_for_precise_time():
 
 async def main():
     await wait_for_precise_time()
-  
+    
     my_cookie_raw = os.environ.get('CAIWAN_COOKIE')
     if not my_cookie_raw:
         print("[菜玩自动签到] 错误: 未能在环境变量中找到 CAIWAN_COOKIE。")
         return
     my_cookie = my_cookie_raw.strip()
-  
+    
     url = "https://caigamer.com/sg_sign-list_today.htm"
     payload = {'action': "check"}
     headers = {
